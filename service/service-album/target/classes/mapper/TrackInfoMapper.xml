@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.atguigu.tingshu.album.mapper.TrackInfoMapper">
+
+    <!--
+        查询声音分页列表.
+    -->
+    <select id="selectUserTrackPage" resultType="com.atguigu.tingshu.vo.album.TrackListVo">
+        select
+        info.albumId,
+        info.albumTitle,
+        info.trackId,
+        info.trackTitle,
+        info.coverUrl,
+        info.mediaDuration,
+        info.status,
+        info.createTime,
+        MAX(IF(info.statType = '0701', info.statNum, 0)) as playStatNum,
+        MAX(IF(info.statType = '0702', info.statNum, 0)) as collectStatNum,
+        MAX(IF(info.statType = '0703', info.statNum, 0)) as praiseStatNum,
+        MAX(IF(info.statType = '0704', info.statNum, 0)) as commentStatNum
+        from (
+        select
+        album.id as albumId,
+        album.album_title as albumTitle,
+        track.id as trackId,
+        track.track_title as trackTitle,
+        track.media_duration as mediaDuration,
+        if(track.cover_url is null or track.cover_url = '', album.cover_url, track.cover_url) as coverUrl,
+        track.status,
+        track.create_time as createTime,
+        stat.stat_type as statType,
+        stat.stat_num as statNum
+        from tingshu_album.track_info track
+        inner join tingshu_album.track_stat stat on stat.track_id = track.id
+        inner join tingshu_album.album_info album on album.id = track.album_id
+        <where>
+            <if test="vo.userId!=null">
+                track.user_id=#{vo.userId}
+            </if>
+            <if test="vo.status!=null and vo.status!=''">
+                and track.status = #{vo.status}
+            </if>
+            <if test="vo.trackTitle!=null and vo.trackTitle !=''">
+                and track.track_title like concat('%',#{vo.trackTitle},'%')
+            </if>
+            and track.is_deleted = 0
+            and album.is_deleted = 0
+        </where>
+        ) info
+        group by info.trackId
+        order by info.trackId desc
+    </select>
+</mapper>
+

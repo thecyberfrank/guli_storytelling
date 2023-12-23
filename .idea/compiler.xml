@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile default="true" name="Default" enabled="true" />
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="service-system-client" />
+        <module name="server-gateway" />
+        <module name="service-album-client" />
+        <module name="common-util" />
+        <module name="service-search-client" />
+        <module name="kafka-util" />
+        <module name="service-album" />
+        <module name="service-order-client" />
+        <module name="service-user-client" />
+        <module name="common-log" />
+        <module name="service-account-client" />
+        <module name="service-order" />
+        <module name="service-util" />
+        <module name="service-live" />
+        <module name="service-user" />
+        <module name="service-search" />
+        <module name="spring-security" />
+        <module name="service-dispatch" />
+        <module name="model" />
+        <module name="service-system" />
+        <module name="service-comment" />
+        <module name="service-account" />
+        <module name="service-payment" />
+      </profile>
+    </annotationProcessing>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="common" options="-parameters" />
+      <module name="common-log" options="-parameters" />
+      <module name="common-util" options="-parameters" />
+      <module name="kafka-util" options="-parameters" />
+      <module name="model" options="-parameters" />
+      <module name="server-gateway" options="-parameters" />
+      <module name="service" options="-parameters" />
+      <module name="service-account" options="-parameters" />
+      <module name="service-account-client" options="-parameters" />
+      <module name="service-album" options="-parameters" />
+      <module name="service-album-client" options="-parameters" />
+      <module name="service-client" options="-parameters" />
+      <module name="service-comment" options="-parameters" />
+      <module name="service-dispatch" options="-parameters" />
+      <module name="service-live" options="-parameters" />
+      <module name="service-order" options="-parameters" />
+      <module name="service-order-client" options="-parameters" />
+      <module name="service-payment" options="-parameters" />
+      <module name="service-search" options="-parameters" />
+      <module name="service-search-client" options="-parameters" />
+      <module name="service-system" options="-parameters" />
+      <module name="service-system-client" options="-parameters" />
+      <module name="service-user" options="-parameters" />
+      <module name="service-user-client" options="-parameters" />
+      <module name="service-util" options="-parameters" />
+      <module name="spring-security" options="-parameters" />
+      <module name="tingshu-parent" options="-parameters" />
+    </option>
+  </component>
+</project>

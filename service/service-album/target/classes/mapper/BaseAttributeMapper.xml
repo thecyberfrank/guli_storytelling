@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.atguigu.tingshu.album.mapper.BaseAttributeMapper">
+
+    <!--
+        id: 表示唯一标识
+        type: 结果集返回的类型：根据方法返回值类型
+        autoMapping： 表示自动映射
+    -->
+    <resultMap id="BaseAttributeMap" type="com.atguigu.tingshu.model.album.BaseAttribute" autoMapping="true">
+        <!--
+            id: 表示当前表的主键
+            result: 表示普通字段映射
+                property：表对应的实体类属性名
+                column:   sql语句执行完成之后的字段名.
+        -->
+        <id property="id" column="id"></id>
+        <!--
+            配置非表中的字段attributeValueList
+            ofType: 数据类型
+        -->
+        <collection property="attributeValueList" ofType="com.atguigu.tingshu.model.album.BaseAttributeValue" autoMapping="true">
+            <!--
+                主键重复必须要起别名.
+            -->
+            <id property="id" column="attribute_value_id"></id>
+        </collection>
+
+    </resultMap>
+    <!--
+         select: 查询：
+         insert: 添加
+         update: 修改
+         delete: 删除
+
+         id: 表示方法名称
+         resultType: 这个方法返回的结果集 单表单值
+         resultMap: 返回结果集映射 配置1对多这种复杂的关系映射
+    -->
+
+    <select id="findAttribute" resultMap="BaseAttributeMap">
+        select
+            ba.id,
+            ba.category1_id,
+            ba.attribute_name,
+            bav.id attribute_value_id,
+            bav.value_name
+        from tingshu_album.base_attribute ba inner join tingshu_album.base_attribute_value bav on ba.id = bav.attribute_id
+        where ba.category1_id = #{category1Id}
+        order by ba.id
+    </select>
+</mapper>
+

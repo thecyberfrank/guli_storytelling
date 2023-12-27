@@ -66,6 +66,67 @@ public class SearchServiceImpl implements SearchService {
     ElasticsearchClient elasticsearchClient;
 
 
+    /**
+     * 主页根据一级分类ID，获取该分类下的专辑
+     *
+     * @param category1Id
+     * @return
+     */
+    @Override
+    public List<Map<String, Object>> channel(Long category1Id) {
+        //  根据一级分类Id找对应的三级置顶数据;
+        Result<List<BaseCategory3>> baseCategory3ListResult = categoryFeignClient.findTopBaseCategory3(category1Id);
+        Assert.notNull(baseCategory3ListResult, "远程调用失败");
+        List<BaseCategory3> baseCategory3List = baseCategory3ListResult.getData();
+        Assert.notNull(baseCategory3List, "三级分类数据为空");
+
+        //  获取三级分类id_list.
+        List<Long> category3IdList = baseCategory3List.stream().map(BaseCategory3::getId).toList();
+        //  将要查询的三级分类转换成ES terms需要的数据类型，数据类型转换： List<Long> ---> List<FieldValue>
+        List<FieldValue> category3IdFieldList = category3IdList.stream().map(id -> FieldValue.of(id)).collect(Collectors.toList());
+        SearchResponse<AlbumInfoIndex> searchResponse = null;
+        try {
+            searchResponse = elasticsearchClient.search(f -> f.index("albuminfo")
+                            .query(q -> q.terms(t -> t.field("category3Id").terms(e -> e.value(category3IdFieldList))))
+                            .aggregations("groupByCategory3IdAgg", a -> a.terms(r -> r.field("category3Id").size(6))
+                                    .aggregations("topTenHotScoreAgg", g -> g.topHits(b -> b.size(6).sort(s -> s.field(p -> p.field("hotScore").order(SortOrder.Desc)))))
+                            )
+                    , AlbumInfoIndex.class);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        //  获取数据：
+        Aggregate groupByCategory3IdAgg = searchResponse.aggregations().get("groupByCategory3IdAgg");
+        //  list=AlbumInfoIndex
+        List<Map<String, Object>> list = groupByCategory3IdAgg.lterms().buckets().array().stream().map(bucket -> {
+            //  创建map 集合
+            Map<String, Object> map = new HashMap<>();
+            //  获取到三级分类Id
+            long category3Id = bucket.key();
+            //  获取专辑集合列表.
+            List<AlbumInfoIndex> albumInfoIndexList = bucket.aggregations().get("topTenHotScoreAgg").topHits().hits().hits().stream().map(hit -> {
+                //  获取的数据.
+                String dataJson = hit.source().toString();
+                //  数据类型转换
+                AlbumInfoIndex albumInfoIndex = JSONObject.parseObject(dataJson, AlbumInfoIndex.class);
+                //  返回数据
+                return albumInfoIndex;
+            }).collect(Collectors.toList());
+
+            //  将这个一级分类下的所有三级分类的集合转换为map. key=category3Id value=BaseCategory3;
+            Map<Long, BaseCategory3> BaseCategory3ToMap = baseCategory3List.stream().collect(Collectors.toMap(BaseCategory3::getId, baseCategory3 -> baseCategory3));
+            //  存储三级分类对象;
+            map.put("baseCategory3", BaseCategory3ToMap.get(category3Id));
+            map.put("list", albumInfoIndexList);
+            //  返回map 集合
+            return map;
+        }).collect(Collectors.toList());
+
+        //  返回数据。
+        return list;
+    }
+
+
     @Override
     public AlbumSearchResponseVo searchAlbum(AlbumIndexQuery albumIndexQuery) {
         /**

@@ -27,5 +27,11 @@ public interface SearchService {
     void lowerAlbum(Long albumId);
 
 
+    /**
+     * 根据一级分类Id获取数据
+     * @param category1Id
+     * @return
+     */
+    List<Map<String, Object>> channel(Long category1Id);
 
 }

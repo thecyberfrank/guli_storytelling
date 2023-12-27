@@ -9,6 +9,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.Map;
+
 @Tag(name = "搜索专辑管理")
 @RestController
 @RequestMapping("api/search/albumInfo")
@@ -17,6 +20,20 @@ public class SearchApiController {
 
     @Autowired
     private SearchService searchService;
+
+    /**
+     * 根据一级分类Id获取频道页数据
+     * @param category1Id
+     * @return
+     */
+    @Operation(summary = "获取频道页数据")
+    @GetMapping("/channel/{category1Id}")
+    public Result channel(@PathVariable Long category1Id){
+        //  调用服务层方法.
+        List<Map<String,Object>> mapList = searchService.channel(category1Id);
+        //  返回数据
+        return Result.ok(mapList);
+    }
 
     /**
      * 检索

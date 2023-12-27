@@ -43,13 +43,14 @@
     -->
 
     <select id="findAttribute" resultMap="BaseAttributeMap">
-        select
-            ba.id,
-            ba.category1_id,
-            ba.attribute_name,
-            bav.id attribute_value_id,
-            bav.value_name
-        from tingshu_album.base_attribute ba inner join tingshu_album.base_attribute_value bav on ba.id = bav.attribute_id
+        select ba.id,
+               ba.category1_id,
+               ba.attribute_name,
+               bav.id attribute_value_id,
+               bav.attribute_id,
+               bav.value_name
+        from tingshu_album.base_attribute ba
+                 inner join tingshu_album.base_attribute_value bav on ba.id = bav.attribute_id
         where ba.category1_id = #{category1Id}
         order by ba.id
     </select>

@@ -15,28 +15,34 @@ import org.springframework.stereotype.Service;
 @SuppressWarnings({"unchecked", "rawtypes"})
 public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> implements UserInfoService {
 
-	@Autowired
-	private UserInfoMapper userInfoMapper;
+    @Autowired
+    private UserInfoMapper userInfoMapper;
 
-	@Override
-	public void updateUser(UserInfoVo userInfoVo, Long userId) {
-		//	创建对象
-		UserInfo userInfo = new UserInfo();
-		//	属性拷贝：
-		BeanUtils.copyProperties(userInfoVo,userInfo);
-		userInfo.setId(userId);
-		//	修改方法
-		userInfoMapper.updateById(userInfo);
-	}
+    @Override
+    public UserInfo getUserInfoVo(Long userId) {
+        return userInfoMapper.selectById(userId);
+        //	return this.getById(userId);
+    }
 
-	@Override
-	public UserInfoVo getUserInfoById(Long userId) {
-		//	获取用户信息
-		UserInfo userInfo = this.getById(userId);
-		//	创建UserInfoVo 对象
-		UserInfoVo userInfoVo = new UserInfoVo();
-		//	属性拷贝：
-		BeanUtils.copyProperties(userInfo,userInfoVo);
-		return userInfoVo;
-	}
+    @Override
+    public void updateUser(UserInfoVo userInfoVo, Long userId) {
+        //	创建对象
+        UserInfo userInfo = new UserInfo();
+        //	属性拷贝：
+        BeanUtils.copyProperties(userInfoVo, userInfo);
+        userInfo.setId(userId);
+        //	修改方法
+        userInfoMapper.updateById(userInfo);
+    }
+
+    @Override
+    public UserInfoVo getUserInfoById(Long userId) {
+        //	获取用户信息
+        UserInfo userInfo = this.getById(userId);
+        //	创建UserInfoVo 对象
+        UserInfoVo userInfoVo = new UserInfoVo();
+        //	属性拷贝：
+        BeanUtils.copyProperties(userInfo, userInfoVo);
+        return userInfoVo;
+    }
 }

@@ -1,5 +1,6 @@
 package com.atguigu.tingshu.album.service;
 
+import com.atguigu.tingshu.model.album.AlbumAttributeValue;
 import com.atguigu.tingshu.model.album.AlbumInfo;
 import com.atguigu.tingshu.query.album.AlbumInfoQuery;
 import com.atguigu.tingshu.vo.album.AlbumInfoVo;
@@ -15,6 +16,7 @@ public interface AlbumInfoService extends IService<AlbumInfo> {
 
     /**
      * 保存专辑
+     *
      * @param albumInfoVo
      * @param userId
      */
@@ -22,6 +24,7 @@ public interface AlbumInfoService extends IService<AlbumInfo> {
 
     /**
      * 根据条件查询专辑列表
+     *
      * @param albumListVoPage
      * @param albumInfoQuery
      * @return
@@ -30,12 +33,14 @@ public interface AlbumInfoService extends IService<AlbumInfo> {
 
     /**
      * 根据专辑Id删除专辑数据
+     *
      * @param albumId
      */
     void removeAlbumInfo(Long albumId);
 
     /**
      * 根据专辑Id回显专辑数据
+     *
      * @param albumId
      * @return
      */
@@ -43,6 +48,7 @@ public interface AlbumInfoService extends IService<AlbumInfo> {
 
     /**
      * 修改专辑
+     *
      * @param albumInfoVo
      * @param albumId
      */
@@ -50,8 +56,19 @@ public interface AlbumInfoService extends IService<AlbumInfo> {
 
     /**
      * 查询用户Id对应的专辑列表
+     *
      * @param userId
      * @return
      */
     List<AlbumInfo> findUserAllAlbumList(Long userId);
+
+
+    /**
+     * 获取专辑属性值列表
+     *
+     * @param albumId
+     * @return
+     */
+    List<AlbumAttributeValue> findAlbumAttributeValue(Long albumId);
 }
+

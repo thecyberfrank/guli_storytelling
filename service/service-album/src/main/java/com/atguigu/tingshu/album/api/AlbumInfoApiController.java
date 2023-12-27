@@ -4,6 +4,7 @@ import com.atguigu.tingshu.album.service.AlbumInfoService;
 import com.atguigu.tingshu.common.login.GuiGuLogin;
 import com.atguigu.tingshu.common.result.Result;
 import com.atguigu.tingshu.common.util.AuthContextHolder;
+import com.atguigu.tingshu.model.album.AlbumAttributeValue;
 import com.atguigu.tingshu.model.album.AlbumInfo;
 import com.atguigu.tingshu.query.album.AlbumInfoQuery;
 import com.atguigu.tingshu.vo.album.AlbumInfoVo;
@@ -135,6 +136,20 @@ public class AlbumInfoApiController {
         List<AlbumInfo> albumInfoList = albumInfoService.findUserAllAlbumList(userId);
         //  返回数据
         return Result.ok(albumInfoList);
+    }
+
+
+    /**
+     * 获取专辑属性值列表
+     * @param albumId
+     * @return
+     */
+    @GetMapping("/findAlbumAttributeValue/{albumId}")
+    public Result<List<AlbumAttributeValue>> findAlbumAttributeValue(@PathVariable("albumId") Long albumId){
+        //  调用服务层方法.
+        List<AlbumAttributeValue> albumAttributeValueList = albumInfoService.findAlbumAttributeValue(albumId);
+        //  返回数据
+        return Result.ok(albumAttributeValueList);
     }
 }
 

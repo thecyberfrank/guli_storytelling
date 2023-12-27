@@ -5,8 +5,10 @@ import com.atguigu.tingshu.album.mapper.AlbumInfoMapper;
 import com.atguigu.tingshu.album.mapper.AlbumStatMapper;
 import com.atguigu.tingshu.album.service.AlbumAttributeValueService;
 import com.atguigu.tingshu.album.service.AlbumInfoService;
+import com.atguigu.tingshu.common.constant.KafkaConstant;
 import com.atguigu.tingshu.common.constant.SystemConstant;
 import com.atguigu.tingshu.common.login.GuiGuLogin;
+import com.atguigu.tingshu.common.service.KafkaService;
 import com.atguigu.tingshu.model.album.AlbumAttributeValue;
 import com.atguigu.tingshu.model.album.AlbumInfo;
 import com.atguigu.tingshu.model.album.AlbumStat;
@@ -46,12 +48,23 @@ public class AlbumInfoServiceImpl extends ServiceImpl<AlbumInfoMapper, AlbumInfo
     @Autowired
     private AlbumAttributeValueService albumAttributeValueService;
 
+    @Autowired
+    private KafkaService kafkaService;
+
 
     @Override
     public IPage<AlbumListVo> selectUserAlbumPage(Page<AlbumListVo> albumListVoPage, AlbumInfoQuery albumInfoQuery) {
         //	调用mapper 层方法
         return albumInfoMapper.selectUserAlbumPage(albumListVoPage, albumInfoQuery);
     }
+
+    @Override
+    public List<AlbumAttributeValue> findAlbumAttributeValue(Long albumId) {
+        //	获取专辑属性值列表
+        //	select * from album_attribute_value where album_id = ?
+        return albumAttributeValueMapper.selectList(new LambdaQueryWrapper<AlbumAttributeValue>().eq(AlbumAttributeValue::getAlbumId, albumId));
+    }
+
 
     @Override
     public List<AlbumInfo> findUserAllAlbumList(Long userId) {
@@ -71,15 +84,13 @@ public class AlbumInfoServiceImpl extends ServiceImpl<AlbumInfoMapper, AlbumInfo
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void updateAlbumInfo(AlbumInfoVo albumInfoVo, Long albumId) {
-        //	album_info 直接更新.
+        //	更新专辑基础数据，album_info
         AlbumInfo albumInfo = new AlbumInfo();
-        //	更新的内容是啥？
         BeanUtils.copyProperties(albumInfoVo, albumInfo);
         albumInfo.setId(albumId);
-        //	ById 必须有主键;
         albumInfoMapper.updateById(albumInfo);
 
-        //	album_attribute_value 先删除表中的数据，再新增.
+        // 更新专辑标签数据（一个专辑有多个标签，批量更新），album_attribute_value
         this.albumAttributeValueMapper.delete(new LambdaQueryWrapper<AlbumAttributeValue>().eq(AlbumAttributeValue::getAlbumId, albumId));
         //	新增：
         List<AlbumAttributeValueVo> albumAttributeValueVoList = albumInfoVo.getAlbumAttributeValueVoList();
@@ -95,6 +106,16 @@ public class AlbumInfoServiceImpl extends ServiceImpl<AlbumInfoMapper, AlbumInfo
             //	使用album_attribute_value 对应的服务层
             albumAttributeValueService.saveBatch(attributeValueList);
         }
+
+        //	如果专辑设置为非隐藏，就发送kafka，后续接收并保存到es：
+        if ("1".equals(albumInfoVo.getIsOpen())) {
+            //	调用上架 发送的内容：是由消费者决定!
+            kafkaService.sendMessage(KafkaConstant.QUEUE_ALBUM_UPPER, albumId.toString());
+        } else {
+            //	调用下架
+            kafkaService.sendMessage(KafkaConstant.QUEUE_ALBUM_LOWER, albumId.toString());
+        }
+
     }
 
     @Override
@@ -126,6 +147,9 @@ public class AlbumInfoServiceImpl extends ServiceImpl<AlbumInfoMapper, AlbumInfo
         albumStatMapper.delete(new LambdaQueryWrapper<AlbumStat>().eq(AlbumStat::getAlbumId, albumId));
         //	album_attribute_value
         albumAttributeValueMapper.delete(new LambdaQueryWrapper<AlbumAttributeValue>().eq(AlbumAttributeValue::getAlbumId, albumId));
+        //	调用下架
+        kafkaService.sendMessage(KafkaConstant.QUEUE_ALBUM_LOWER, albumId.toString());
+
     }
 
 
@@ -186,6 +210,11 @@ public class AlbumInfoServiceImpl extends ServiceImpl<AlbumInfoMapper, AlbumInfo
         this.saveAlbumStat(albumInfo.getId(), SystemConstant.ALBUM_STAT_SUBSCRIBE);
         this.saveAlbumStat(albumInfo.getId(), SystemConstant.ALBUM_STAT_BROWSE);
         this.saveAlbumStat(albumInfo.getId(), SystemConstant.ALBUM_STAT_COMMENT);
+
+        // 上架ES
+        if ("1".equals(albumInfoVo.getIsOpen())) {
+            kafkaService.sendMessage(KafkaConstant.QUEUE_ALBUM_UPPER, albumInfo.getId().toString());
+        }
     }
 
     /**

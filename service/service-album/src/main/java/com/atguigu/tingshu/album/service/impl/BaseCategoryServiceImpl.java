@@ -92,8 +92,15 @@ public class BaseCategoryServiceImpl extends ServiceImpl<BaseCategory1Mapper, Ba
     }
 
     @Override
-    public List<BaseAttribute> findAttribute(Long category1Id) {
-        List<BaseAttribute> attributes = baseAttributeMapper.findAttribute(category1Id);
-        return attributes;
+    public BaseCategoryView getCategoryView(Long category3Id) {
+        //	根据主键查询
+        return baseCategoryViewMapper.selectById(category3Id);
     }
+
+    @Override
+    public List<BaseAttribute> findAttribute(Long category1Id) {
+        return baseAttributeMapper.findAttribute(category1Id);
+    }
+
+
 }

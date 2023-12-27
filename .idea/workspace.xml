@@ -4,19 +4,35 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a271840d-fb25-4606-b81b-5bb69b89eb91" name="Changes" comment="init&#10;1. 专辑的CRUD&#10;2. 声音的CRUD&#10;3. 登录">
-      <change afterPath="$PROJECT_DIR$/service/service-search/src/main/java/com/atguigu/tingshu/respoistory/AlbumInfoEsRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/service/service-search/src/main/java/com/atguigu/tingshu/search/config/ThreadPoolExecutorConfig.java" afterDir="false" />
+    <list default="true" id="a271840d-fb25-4606-b81b-5bb69b89eb91" name="Changes" comment="ES内的专辑上下架">
+      <change afterPath="$PROJECT_DIR$/service/service-search/src/main/java/com/atguigu/tingshu/receiver/SearchReceiver.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/service-client/service-album-client/src/main/java/com/atguigu/tingshu/album/client/AlbumInfoFeignClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/service-client/service-album-client/src/main/java/com/atguigu/tingshu/album/client/AlbumInfoFeignClient.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/service-client/service-album-client/src/main/java/com/atguigu/tingshu/album/client/CategoryFeignClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/service-client/service-album-client/src/main/java/com/atguigu/tingshu/album/client/CategoryFeignClient.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/service-client/service-album-client/src/main/java/com/atguigu/tingshu/album/client/impl/AlbumInfoDegradeFeignClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/service-client/service-album-client/src/main/java/com/atguigu/tingshu/album/client/impl/AlbumInfoDegradeFeignClient.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/service-client/service-album-client/src/main/java/com/atguigu/tingshu/album/client/impl/CategoryDegradeFeignClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/service-client/service-album-client/src/main/java/com/atguigu/tingshu/album/client/impl/CategoryDegradeFeignClient.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/service-client/service-user-client/src/main/java/com/atguigu/tingshu/user/client/UserInfoFeignClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/service-client/service-user-client/src/main/java/com/atguigu/tingshu/user/client/UserInfoFeignClient.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/service-client/service-user-client/src/main/java/com/atguigu/tingshu/user/client/impl/UserInfoDegradeFeignClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/service-client/service-user-client/src/main/java/com/atguigu/tingshu/user/client/impl/UserInfoDegradeFeignClient.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/service/service-search/src/main/java/com/atguigu/tingshu/search/api/SearchApiController.java" beforeDir="false" afterPath="$PROJECT_DIR$/service/service-search/src/main/java/com/atguigu/tingshu/search/api/SearchApiController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/service/service-search/src/main/java/com/atguigu/tingshu/search/service/SearchService.java" beforeDir="false" afterPath="$PROJECT_DIR$/service/service-search/src/main/java/com/atguigu/tingshu/search/service/SearchService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/service/service-search/src/main/java/com/atguigu/tingshu/search/service/impl/SearchServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/service/service-search/src/main/java/com/atguigu/tingshu/search/service/impl/SearchServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/common/kafka-util/src/main/java/com/atguigu/tingshu/common/service/KafkaService.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/kafka-util/src/main/java/com/atguigu/tingshu/common/service/KafkaService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/common/kafka-util/target/classes/com/atguigu/tingshu/common/service/KafkaService.class" beforeDir="false" afterPath="$PROJECT_DIR$/common/kafka-util/target/classes/com/atguigu/tingshu/common/service/KafkaService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service-client/service-album-client/target/classes/com/atguigu/tingshu/album/client/AlbumInfoFeignClient.class" beforeDir="false" afterPath="$PROJECT_DIR$/service-client/service-album-client/target/classes/com/atguigu/tingshu/album/client/AlbumInfoFeignClient.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service-client/service-album-client/target/classes/com/atguigu/tingshu/album/client/CategoryFeignClient.class" beforeDir="false" afterPath="$PROJECT_DIR$/service-client/service-album-client/target/classes/com/atguigu/tingshu/album/client/CategoryFeignClient.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service-client/service-album-client/target/classes/com/atguigu/tingshu/album/client/impl/AlbumInfoDegradeFeignClient.class" beforeDir="false" afterPath="$PROJECT_DIR$/service-client/service-album-client/target/classes/com/atguigu/tingshu/album/client/impl/AlbumInfoDegradeFeignClient.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service-client/service-album-client/target/classes/com/atguigu/tingshu/album/client/impl/CategoryDegradeFeignClient.class" beforeDir="false" afterPath="$PROJECT_DIR$/service-client/service-album-client/target/classes/com/atguigu/tingshu/album/client/impl/CategoryDegradeFeignClient.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service-client/service-user-client/target/classes/com/atguigu/tingshu/user/client/UserInfoFeignClient.class" beforeDir="false" afterPath="$PROJECT_DIR$/service-client/service-user-client/target/classes/com/atguigu/tingshu/user/client/UserInfoFeignClient.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service-client/service-user-client/target/classes/com/atguigu/tingshu/user/client/impl/UserInfoDegradeFeignClient.class" beforeDir="false" afterPath="$PROJECT_DIR$/service-client/service-user-client/target/classes/com/atguigu/tingshu/user/client/impl/UserInfoDegradeFeignClient.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/service-album/src/main/java/com/atguigu/tingshu/album/api/AlbumInfoApiController.java" beforeDir="false" afterPath="$PROJECT_DIR$/service/service-album/src/main/java/com/atguigu/tingshu/album/api/AlbumInfoApiController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/service-album/src/main/java/com/atguigu/tingshu/album/api/BaseCategoryApiController.java" beforeDir="false" afterPath="$PROJECT_DIR$/service/service-album/src/main/java/com/atguigu/tingshu/album/api/BaseCategoryApiController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/service-album/src/main/java/com/atguigu/tingshu/album/service/AlbumInfoService.java" beforeDir="false" afterPath="$PROJECT_DIR$/service/service-album/src/main/java/com/atguigu/tingshu/album/service/AlbumInfoService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/service-album/src/main/java/com/atguigu/tingshu/album/service/BaseCategoryService.java" beforeDir="false" afterPath="$PROJECT_DIR$/service/service-album/src/main/java/com/atguigu/tingshu/album/service/BaseCategoryService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/service-album/src/main/java/com/atguigu/tingshu/album/service/impl/AlbumInfoServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/service/service-album/src/main/java/com/atguigu/tingshu/album/service/impl/AlbumInfoServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/service-album/src/main/java/com/atguigu/tingshu/album/service/impl/BaseCategoryServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/service/service-album/src/main/java/com/atguigu/tingshu/album/service/impl/BaseCategoryServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/service-album/src/main/resources/mapper/BaseAttributeMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/service/service-album/src/main/resources/mapper/BaseAttributeMapper.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/service-album/target/classes/com/atguigu/tingshu/album/api/BaseCategoryApiController.class" beforeDir="false" afterPath="$PROJECT_DIR$/service/service-album/target/classes/com/atguigu/tingshu/album/api/BaseCategoryApiController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/service-album/target/classes/com/atguigu/tingshu/album/service/AlbumInfoService.class" beforeDir="false" afterPath="$PROJECT_DIR$/service/service-album/target/classes/com/atguigu/tingshu/album/service/AlbumInfoService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/service-album/target/classes/com/atguigu/tingshu/album/service/BaseCategoryService.class" beforeDir="false" afterPath="$PROJECT_DIR$/service/service-album/target/classes/com/atguigu/tingshu/album/service/BaseCategoryService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/service-album/target/classes/com/atguigu/tingshu/album/service/impl/AlbumInfoServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/service/service-album/target/classes/com/atguigu/tingshu/album/service/impl/AlbumInfoServiceImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/service-album/target/classes/com/atguigu/tingshu/album/service/impl/BaseCategoryServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/service/service-album/target/classes/com/atguigu/tingshu/album/service/impl/BaseCategoryServiceImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/service-user/src/main/java/com/atguigu/tingshu/user/api/UserInfoApiController.java" beforeDir="false" afterPath="$PROJECT_DIR$/service/service-user/src/main/java/com/atguigu/tingshu/user/api/UserInfoApiController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/service-user/src/main/java/com/atguigu/tingshu/user/service/UserInfoService.java" beforeDir="false" afterPath="$PROJECT_DIR$/service/service-user/src/main/java/com/atguigu/tingshu/user/service/UserInfoService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/service-user/src/main/java/com/atguigu/tingshu/user/service/impl/UserInfoServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/service/service-user/src/main/java/com/atguigu/tingshu/user/service/impl/UserInfoServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/service-user/target/classes/com/atguigu/tingshu/user/service/UserInfoService.class" beforeDir="false" afterPath="$PROJECT_DIR$/service/service-user/target/classes/com/atguigu/tingshu/user/service/UserInfoService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/service-user/target/classes/com/atguigu/tingshu/user/service/impl/UserInfoServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/service/service-user/target/classes/com/atguigu/tingshu/user/service/impl/UserInfoServiceImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/service-user/target/classes/com/atguigu/tingshu/user/service/impl/WxLoginServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/service/service-user/target/classes/com/atguigu/tingshu/user/service/impl/WxLoginServiceImpl.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -79,6 +95,7 @@
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
     &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
     &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
     &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
@@ -108,7 +125,7 @@
       </set>
     </option>
   </component>
-  <component name="RunManager" selected="Spring Boot.ServiceAlbumApplication">
+  <component name="RunManager" selected="Spring Boot.ServiceSearchApplication">
     <configuration name="ServerGatewayApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
       <module name="server-gateway" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="com.atguigu.tingshu.ServerGatewayApplication" />
@@ -212,7 +229,8 @@
       <workItem from="1703206090232" duration="14733000" />
       <workItem from="1703293329089" duration="3874000" />
       <workItem from="1703551624470" duration="9000" />
-      <workItem from="1703584740804" duration="6355000" />
+      <workItem from="1703584740804" duration="15414000" />
+      <workItem from="1703666087673" duration="2179000" />
     </task>
     <task id="LOCAL-00001" summary="init&#10;1. 专辑的CRUD&#10;2. 声音的CRUD&#10;3. 登录">
       <option name="closed" value="true" />
@@ -222,7 +240,15 @@
       <option name="project" value="LOCAL" />
       <updated>1703293503304</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="ES内的专辑上下架">
+      <option name="closed" value="true" />
+      <created>1703591345111</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1703591345111</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -241,20 +267,21 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="init&#10;1. 专辑的CRUD&#10;2. 声音的CRUD&#10;3. 登录" />
-    <option name="LAST_COMMIT_MESSAGE" value="init&#10;1. 专辑的CRUD&#10;2. 声音的CRUD&#10;3. 登录" />
+    <MESSAGE value="ES内的专辑上下架" />
+    <option name="LAST_COMMIT_MESSAGE" value="ES内的专辑上下架" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/service/service-album/src/main/java/com/atguigu/tingshu/album/service/impl/AlbumInfoServiceImpl.java</url>
-          <line>65</line>
-          <option name="timeStamp" value="10" />
+          <url>file://$PROJECT_DIR$/service/service-search/src/main/java/com/atguigu/tingshu/search/api/SearchApiController.java</url>
+          <line>43</line>
+          <option name="timeStamp" value="15" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/service/service-album/src/main/java/com/atguigu/tingshu/album/api/AlbumInfoApiController.java</url>
-          <line>134</line>
-          <option name="timeStamp" value="11" />
+          <url>file://$PROJECT_DIR$/service/service-album/src/main/java/com/atguigu/tingshu/album/service/impl/AlbumInfoServiceImpl.java</url>
+          <line>215</line>
+          <option name="timeStamp" value="16" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

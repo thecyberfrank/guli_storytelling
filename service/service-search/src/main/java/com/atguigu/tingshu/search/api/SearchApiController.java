@@ -27,7 +27,7 @@ public class SearchApiController {
     @PostMapping
     public Result search(@RequestBody AlbumIndexQuery albumIndexQuery){
         //  调用服务层方法.
-        AlbumSearchResponseVo albumSearchResponseVo = searchService.search(albumIndexQuery);
+        AlbumSearchResponseVo albumSearchResponseVo = searchService.searchAlbum(albumIndexQuery);
         //  返回数据
         return Result.ok(albumSearchResponseVo);
     }

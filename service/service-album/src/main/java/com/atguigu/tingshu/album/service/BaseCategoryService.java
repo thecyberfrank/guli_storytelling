@@ -37,6 +37,13 @@ public interface BaseCategoryService extends IService<BaseCategory1> {
 
 
     /**
+     * 根据一级分类Id获取数据
+     * @param category1Id
+     * @return
+     */
+    JSONObject getBaseCategoryList(Long category1Id);
+
+    /**
      * 根据一级分类Id查询置顶到频道页的三级分类列表
      *
      * @param category1Id

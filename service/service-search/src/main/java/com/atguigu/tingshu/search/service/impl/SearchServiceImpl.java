@@ -74,7 +74,7 @@ public class SearchServiceImpl implements SearchService {
      */
     @Override
     public List<Map<String, Object>> channel(Long category1Id) {
-        //  根据一级分类Id找对应的三级置顶数据;
+        //  根据一级分类Id找对应的三级置顶数据: map <一级分类ID, <三级分类ID, List<Album>>>
         Result<List<BaseCategory3>> baseCategory3ListResult = categoryFeignClient.findTopBaseCategory3(category1Id);
         Assert.notNull(baseCategory3ListResult, "远程调用失败");
         List<BaseCategory3> baseCategory3List = baseCategory3ListResult.getData();

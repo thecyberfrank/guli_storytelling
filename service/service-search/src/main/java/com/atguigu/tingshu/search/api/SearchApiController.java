@@ -36,6 +36,21 @@ public class SearchApiController {
     }
 
     /**
+     * 检索自动补全
+     * @param keyword
+     * @return
+     */
+    @Operation(summary = "检索自动补全")
+    @GetMapping("completeSuggest/{keyword}")
+    public Result completeSuggest(@PathVariable String keyword){
+        //  调用服务层方法.
+        List<String> list = searchService.completeSuggest(keyword);
+        //  返回数据
+        return Result.ok(list);
+    }
+
+
+    /**
      * 检索
      * @param albumIndexQuery
      * @return

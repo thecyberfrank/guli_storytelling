@@ -4,13 +4,38 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a271840d-fb25-4606-b81b-5bb69b89eb91" name="Changes" comment="完成主页数据ES搜索">
+    <list default="true" id="a271840d-fb25-4606-b81b-5bb69b89eb91" name="Changes" comment="完成主页数据通过ES获取">
+      <change afterPath="$PROJECT_DIR$/service/service-search/src/main/java/com/atguigu/tingshu/search/respoistory/SuggestIndexRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/service/service-search/target/classes/com/atguigu/tingshu/ServiceSearchApplication.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/service/service-search/target/classes/com/atguigu/tingshu/receiver/SearchReceiver.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/service/service-search/target/classes/com/atguigu/tingshu/respoistory/AlbumInfoEsRepository.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/service/service-search/target/classes/com/atguigu/tingshu/search/api/SearchApiController.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/service/service-search/target/classes/com/atguigu/tingshu/search/api/itemApiController.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/service/service-search/target/classes/com/atguigu/tingshu/search/config/ThreadPoolExecutorConfig.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/service/service-search/target/classes/com/atguigu/tingshu/search/service/ItemService.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/service/service-search/target/classes/com/atguigu/tingshu/search/service/SearchService.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/service/service-search/target/classes/com/atguigu/tingshu/search/service/impl/ItemServiceImpl.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/service/service-search/target/classes/com/atguigu/tingshu/search/service/impl/SearchServiceImpl.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/service/service-album/src/main/java/com/atguigu/tingshu/album/service/BaseCategoryService.java" beforeDir="false" afterPath="$PROJECT_DIR$/service/service-album/src/main/java/com/atguigu/tingshu/album/service/BaseCategoryService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/service/service-album/src/main/java/com/atguigu/tingshu/album/service/impl/BaseCategoryServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/service/service-album/src/main/java/com/atguigu/tingshu/album/service/impl/BaseCategoryServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/service/service-album/target/classes/com/atguigu/tingshu/album/service/BaseCategoryService.class" beforeDir="false" afterPath="$PROJECT_DIR$/service/service-album/target/classes/com/atguigu/tingshu/album/service/BaseCategoryService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/service/service-album/target/classes/com/atguigu/tingshu/album/service/impl/BaseCategoryServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/service/service-album/target/classes/com/atguigu/tingshu/album/service/impl/BaseCategoryServiceImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/service/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/service-account/src/main/resources/logback-spring.xml" beforeDir="false" afterPath="$PROJECT_DIR$/service/service-account/src/main/resources/logback-spring.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/service-album/src/main/resources/logback-spring.xml" beforeDir="false" afterPath="$PROJECT_DIR$/service/service-album/src/main/resources/logback-spring.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/service-album/target/classes/logback-spring.xml" beforeDir="false" afterPath="$PROJECT_DIR$/service/service-album/target/classes/logback-spring.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/service-comment/src/main/resources/logback-spring.xml" beforeDir="false" afterPath="$PROJECT_DIR$/service/service-comment/src/main/resources/logback-spring.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/service-dispatch/src/main/resources/logback-spring.xml" beforeDir="false" afterPath="$PROJECT_DIR$/service/service-dispatch/src/main/resources/logback-spring.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/service-live/src/main/resources/logback-spring.xml" beforeDir="false" afterPath="$PROJECT_DIR$/service/service-live/src/main/resources/logback-spring.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/service-order/src/main/resources/logback-spring.xml" beforeDir="false" afterPath="$PROJECT_DIR$/service/service-order/src/main/resources/logback-spring.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/service-payment/src/main/resources/logback-spring.xml" beforeDir="false" afterPath="$PROJECT_DIR$/service/service-payment/src/main/resources/logback-spring.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/service-search/src/main/java/com/atguigu/tingshu/receiver/SearchReceiver.java" beforeDir="false" afterPath="$PROJECT_DIR$/service/service-search/src/main/java/com/atguigu/tingshu/search/receiver/SearchReceiver.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/service-search/src/main/java/com/atguigu/tingshu/respoistory/AlbumInfoEsRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/service/service-search/src/main/java/com/atguigu/tingshu/search/respoistory/AlbumInfoEsRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/service-search/src/main/java/com/atguigu/tingshu/search/api/SearchApiController.java" beforeDir="false" afterPath="$PROJECT_DIR$/service/service-search/src/main/java/com/atguigu/tingshu/search/api/SearchApiController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/service-search/src/main/java/com/atguigu/tingshu/search/service/SearchService.java" beforeDir="false" afterPath="$PROJECT_DIR$/service/service-search/src/main/java/com/atguigu/tingshu/search/service/SearchService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/service/service-search/src/main/java/com/atguigu/tingshu/search/service/impl/SearchServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/service/service-search/src/main/java/com/atguigu/tingshu/search/service/impl/SearchServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/service-search/src/main/resources/logback-spring.xml" beforeDir="false" afterPath="$PROJECT_DIR$/service/service-search/src/main/resources/logback-spring.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/service-search/target/classes/logback-spring.xml" beforeDir="false" afterPath="$PROJECT_DIR$/service/service-search/target/classes/logback-spring.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/service-system/src/main/resources/logback-spring.xml" beforeDir="false" afterPath="$PROJECT_DIR$/service/service-system/src/main/resources/logback-spring.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/service-user/src/main/resources/logback-spring.xml" beforeDir="false" afterPath="$PROJECT_DIR$/service/service-user/src/main/resources/logback-spring.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/service-user/target/classes/logback-spring.xml" beforeDir="false" afterPath="$PROJECT_DIR$/service/service-user/target/classes/logback-spring.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -22,11 +47,26 @@
       <list>
         <option value="AnnotationType" />
         <option value="Class" />
+        <option value="Interface" />
       </list>
     </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;thecyberfrank&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">
+    <option name="selectedUrlAndAccountId">
+      <UrlAndAccount>
+        <option name="accountId" value="77787977-3940-4a6f-8ab6-9c0b8a4175e4" />
+        <option name="url" value="https://github.com/thecyberfrank/guli_storytelling.git" />
+      </UrlAndAccount>
+    </option>
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -208,7 +248,8 @@
       <workItem from="1703293329089" duration="3874000" />
       <workItem from="1703551624470" duration="9000" />
       <workItem from="1703584740804" duration="15414000" />
-      <workItem from="1703666087673" duration="13118000" />
+      <workItem from="1703666087673" duration="13471000" />
+      <workItem from="1703751575043" duration="7715000" />
     </task>
     <task id="LOCAL-00001" summary="init&#10;1. 专辑的CRUD&#10;2. 声音的CRUD&#10;3. 登录">
       <option name="closed" value="true" />
@@ -250,7 +291,15 @@
       <option name="project" value="LOCAL" />
       <updated>1703681742624</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="完成主页数据通过ES获取">
+      <option name="closed" value="true" />
+      <created>1703682581531</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1703682581531</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -273,14 +322,15 @@
     <MESSAGE value="ES内的专辑上下架bugfix" />
     <MESSAGE value="添加搜索框搜索逻辑" />
     <MESSAGE value="完成主页数据ES搜索" />
-    <option name="LAST_COMMIT_MESSAGE" value="完成主页数据ES搜索" />
+    <MESSAGE value="完成主页数据通过ES获取" />
+    <option name="LAST_COMMIT_MESSAGE" value="完成主页数据通过ES获取" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/service/service-search/src/main/java/com/atguigu/tingshu/search/api/SearchApiController.java</url>
-          <line>60</line>
+          <line>75</line>
           <option name="timeStamp" value="15" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">

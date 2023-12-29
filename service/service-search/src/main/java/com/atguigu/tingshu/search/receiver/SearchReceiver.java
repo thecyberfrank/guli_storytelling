@@ -1,4 +1,4 @@
-package com.atguigu.tingshu.receiver;
+package com.atguigu.tingshu.search.receiver;
 
 import com.atguigu.tingshu.common.constant.KafkaConstant;
 import com.atguigu.tingshu.search.service.SearchService;

@@ -7,6 +7,9 @@ import co.elastic.clients.elasticsearch._types.aggregations.Aggregate;
 import co.elastic.clients.elasticsearch._types.query_dsl.BoolQuery;
 import co.elastic.clients.elasticsearch.core.SearchRequest;
 import co.elastic.clients.elasticsearch.core.SearchResponse;
+import co.elastic.clients.elasticsearch.core.search.CompletionSuggestOption;
+import co.elastic.clients.elasticsearch.core.search.Hit;
+import co.elastic.clients.elasticsearch.core.search.Suggestion;
 import com.alibaba.fastjson.JSONObject;
 import com.atguigu.tingshu.album.client.AlbumInfoFeignClient;
 import com.atguigu.tingshu.album.client.CategoryFeignClient;
@@ -17,8 +20,10 @@ import com.atguigu.tingshu.model.album.BaseCategory3;
 import com.atguigu.tingshu.model.album.BaseCategoryView;
 import com.atguigu.tingshu.model.search.AlbumInfoIndex;
 import com.atguigu.tingshu.model.search.AttributeValueIndex;
+import com.atguigu.tingshu.model.search.SuggestIndex;
 import com.atguigu.tingshu.query.search.AlbumIndexQuery;
-import com.atguigu.tingshu.respoistory.AlbumInfoEsRepository;
+import com.atguigu.tingshu.search.respoistory.AlbumInfoEsRepository;
+import com.atguigu.tingshu.search.respoistory.SuggestIndexRepository;
 import com.atguigu.tingshu.search.service.SearchService;
 import com.atguigu.tingshu.user.client.UserInfoFeignClient;
 import com.atguigu.tingshu.vo.search.AlbumInfoIndexVo;
@@ -34,10 +39,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.stream.Collectors;
@@ -49,21 +51,98 @@ import java.util.stream.Collectors;
 public class SearchServiceImpl implements SearchService {
 
     @Resource
-    AlbumInfoFeignClient albumInfoFeignClient;
+    private AlbumInfoFeignClient albumInfoFeignClient;
     @Resource
-    CategoryFeignClient categoryFeignClient;
+    private CategoryFeignClient categoryFeignClient;
 
     @Resource
-    UserInfoFeignClient userInfoFeignClient;
+    private UserInfoFeignClient userInfoFeignClient;
 
     @Autowired
-    ThreadPoolExecutor threadPoolExecutor;
+    private ThreadPoolExecutor threadPoolExecutor;
 
     @Autowired
-    AlbumInfoEsRepository albumInfoEsRepository;
+    private AlbumInfoEsRepository albumInfoEsRepository;
 
     @Autowired
-    ElasticsearchClient elasticsearchClient;
+    private ElasticsearchClient elasticsearchClient;
+
+    @Autowired
+    private SuggestIndexRepository suggestIndexRepository;
+
+
+    @Override
+    public List<String> completeSuggest(String keyword) {
+        SearchResponse<SuggestIndex> searchResponse = null;
+        try {
+            searchResponse = elasticsearchClient.search(f -> f.index("suggestinfo")
+                            .suggest(s -> s
+                                    .suggesters("suggestionKeyword", u -> u.prefix(keyword).completion(c -> c.field("keyword").size(10).skipDuplicates(true).fuzzy(z -> z.fuzziness("auto"))))
+                                    .suggesters("suggestionkeywordPinyin", s1 -> s1.prefix(keyword).completion(c -> c.field("keywordPinyin").fuzzy(z -> z.fuzziness("auto")).skipDuplicates(true).size(10)))
+                                    .suggesters("suggestionkeywordSequence", s2 -> s2.prefix(keyword).completion(c -> c.field("keywordSequence").fuzzy(z -> z.fuzziness("auto")).skipDuplicates(true).size(10)
+                                    ))
+                            )
+                    ,
+                    SuggestIndex.class);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        //  获取数据之后，将数据统一接收。
+        HashSet<String> set = new HashSet<>();
+        set.addAll(this.parseResultData(searchResponse, "suggestionKeyword"));
+        set.addAll(this.parseResultData(searchResponse, "suggestionkeywordPinyin"));
+        set.addAll(this.parseResultData(searchResponse, "suggestionkeywordSequence"));
+        if (set.size() < 10) {
+            //  执行dsl语句，获取结果，将set集合补充到10条数据
+            SearchResponse<SuggestIndex> response = null;
+            try {
+                response = elasticsearchClient.search(f -> f.index("suggestinfo").query(q -> q.match(m -> m.field("title").query(keyword))), SuggestIndex.class);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            //  获取结果集.
+            List<Hit<SuggestIndex>> hits = response.hits().hits();
+            if (!CollectionUtils.isEmpty(hits)) {
+                //  循环遍历
+                for (Hit<SuggestIndex> hit : hits) {
+                    //  获取专辑标题
+                    String title = hit.source().getTitle();
+                    //  添加数据
+                    set.add(title);
+                    //  判断
+                    if (set.size() >= 10) {
+                        //  return break continue;
+                        break;
+                    }
+                }
+            }
+        }
+
+        //  返回数据
+        return new ArrayList<>(set);
+    }
+
+    private Collection<String> parseResultData(SearchResponse<SuggestIndex> searchResponse, String suggestionKeyword) {
+        //  final List<String>[] stringList = new List[]{new ArrayList<>()};
+        ArrayList<String> stringArrayList = new ArrayList<>();
+        //  获取数据。
+        List<Suggestion<SuggestIndex>> suggestionList = searchResponse.suggest().get(suggestionKeyword);
+        if (!CollectionUtils.isEmpty(suggestionList)) {
+            suggestionList.stream().forEach(suggestIndexSuggestion -> {
+                List<CompletionSuggestOption<SuggestIndex>> list = suggestIndexSuggestion.completion().options();
+                //  判断
+                if (!CollectionUtils.isEmpty(list)) {
+                    for (CompletionSuggestOption<SuggestIndex> suggestIndexCompletionSuggestOption : list) {
+                        //  获取到专辑标题数据
+                        stringArrayList.add(suggestIndexCompletionSuggestOption.source().getTitle());
+                    }
+                }
+            });
+        }
+
+        //  返回数据
+        return stringArrayList;
+    }
 
 
     /**
@@ -229,7 +308,8 @@ public class SearchServiceImpl implements SearchService {
 
     }
 
-    private AlbumSearchResponseVo parseResultData(AlbumIndexQuery albumIndexQuery, SearchResponse<AlbumInfoIndex> searchResponse) {
+    private AlbumSearchResponseVo parseResultData(AlbumIndexQuery
+                                                          albumIndexQuery, SearchResponse<AlbumInfoIndex> searchResponse) {
         AlbumSearchResponseVo albumSearchResponseVo = new AlbumSearchResponseVo();
         //  添加查询列表
         List<AlbumInfoIndexVo> albumInfoIndexVoList = searchResponse.hits().hits().stream().map(albumInfoIndexHit -> {

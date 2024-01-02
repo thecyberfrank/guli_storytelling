@@ -4,6 +4,9 @@ import com.atguigu.tingshu.model.user.UserInfo;
 import com.atguigu.tingshu.vo.user.UserInfoVo;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.util.List;
+import java.util.Map;
+
 public interface UserInfoService extends IService<UserInfo> {
     /**
      * 根据用户Id 获取用户信息
@@ -28,4 +31,14 @@ public interface UserInfoService extends IService<UserInfo> {
      * @return
      */
     UserInfo getUserInfoVo(Long userId);
+
+
+    /**
+     * 判断用户是否购买声音列表
+     * @param albumId
+     * @param trackIdList
+     * @param userId
+     * @return
+     */
+    Map<Long, Integer> userIsPaidTrack(Long albumId, List<Long> trackIdList, Long userId);
 }

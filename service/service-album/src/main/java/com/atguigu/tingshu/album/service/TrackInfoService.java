@@ -2,6 +2,7 @@ package com.atguigu.tingshu.album.service;
 
 import com.atguigu.tingshu.model.album.TrackInfo;
 import com.atguigu.tingshu.query.album.TrackInfoQuery;
+import com.atguigu.tingshu.vo.album.AlbumTrackListVo;
 import com.atguigu.tingshu.vo.album.TrackInfoVo;
 import com.atguigu.tingshu.vo.album.TrackListVo;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -15,6 +16,7 @@ public interface TrackInfoService extends IService<TrackInfo> {
 
     /**
      * 上传声音：
+     *
      * @param file
      * @return
      */
@@ -22,6 +24,7 @@ public interface TrackInfoService extends IService<TrackInfo> {
 
     /**
      * 保存声音
+     *
      * @param trackInfoVo
      * @param userId
      */
@@ -29,6 +32,7 @@ public interface TrackInfoService extends IService<TrackInfo> {
 
     /**
      * 查询声音分页列表
+     *
      * @param trackListVoPage
      * @param trackInfoQuery
      * @return
@@ -37,12 +41,14 @@ public interface TrackInfoService extends IService<TrackInfo> {
 
     /**
      * 根据声音Id删除数据
+     *
      * @param trackId
      */
     void removeTrackInfo(Long trackId);
 
     /**
      * 根据Id 获取数据
+     *
      * @param trackId
      * @return
      */
@@ -50,8 +56,19 @@ public interface TrackInfoService extends IService<TrackInfo> {
 
     /**
      * 修改声音
+     *
      * @param trackInfoVo
      * @param trackId
      */
     void updateTrackInfo(TrackInfoVo trackInfoVo, Long trackId);
+
+    /**
+     * 声音分类列表
+     *
+     * @param albumTrackListVoPage
+     * @param albumId
+     * @param userId
+     * @return
+     */
+    IPage<AlbumTrackListVo> findAlbumTrackPage(Page<AlbumTrackListVo> albumTrackListVoPage, Long albumId, Long userId);
 }

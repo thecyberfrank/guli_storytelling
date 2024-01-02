@@ -365,7 +365,7 @@ public class SearchServiceImpl implements SearchService {
             // 将专辑信息导入ES专辑对象
             BeanUtils.copyProperties(albumInfo, albumInfoEsEntity);
             return albumInfo;
-        });
+        }, threadPoolExecutor);
 
         //2. 获取专辑标签
         CompletableFuture<Void> tagInfoCompletableFuture = CompletableFuture.runAsync(() -> {
@@ -381,7 +381,7 @@ public class SearchServiceImpl implements SearchService {
                 return tagEsValue;
             }).collect(Collectors.toList());
             albumInfoEsEntity.setAttributeValueIndexList(albumEsTags);
-        });
+        }, threadPoolExecutor);
 
         //3.专辑分类信息
         CompletableFuture<Void> categoryInfoCompletableFuture = albumInfoCompletableFuture.thenAcceptAsync(albumInfo -> {
@@ -392,7 +392,7 @@ public class SearchServiceImpl implements SearchService {
             albumInfoEsEntity.setCategory1Id(baseCategoryView.getCategory1Id());
             albumInfoEsEntity.setCategory2Id(baseCategoryView.getCategory2Id());
             albumInfoEsEntity.setCategory3Id(baseCategoryView.getCategory3Id());
-        });
+        }, threadPoolExecutor);
 
         //4.作者信息
         CompletableFuture<Void> authorInfoCompletableFuture = albumInfoCompletableFuture.thenAcceptAsync(albumInfo -> {
@@ -401,7 +401,7 @@ public class SearchServiceImpl implements SearchService {
             UserInfoVo userInfoVo = userInfoResult.getData();
             Assert.notNull(userInfoResult, "没查到用户信息");
             albumInfoEsEntity.setAnnouncerName(userInfoVo.getNickname());
-        });
+        }, threadPoolExecutor);
 
         // 随机赋播放量等数据
         int playStatNum = new Random().nextInt(10000000);

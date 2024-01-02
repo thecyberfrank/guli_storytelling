@@ -4,6 +4,7 @@ import com.atguigu.tingshu.album.client.impl.AlbumInfoDegradeFeignClient;
 import com.atguigu.tingshu.common.result.Result;
 import com.atguigu.tingshu.model.album.AlbumAttributeValue;
 import com.atguigu.tingshu.model.album.AlbumInfo;
+import com.atguigu.tingshu.vo.album.AlbumStatVo;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,6 +24,7 @@ public interface AlbumInfoFeignClient {
     /**
      * 获取专辑信息
      * 如果远程调用出现异常；则会走fallback=AlbumInfoDegradeFeignClient 熔断类。
+     *
      * @param id
      * @return
      */
@@ -31,12 +33,21 @@ public interface AlbumInfoFeignClient {
 
     /**
      * 获取专辑属性值列表
+     *
      * @param albumId
      * @return
      */
     @GetMapping("api/album/albumInfo/findAlbumAttributeValue/{albumId}")
     Result<List<AlbumAttributeValue>> findAlbumAttributeValue(@PathVariable("albumId") Long albumId);
 
+    /**
+     * 通过专辑Id 获取到专辑统计信息
+     *
+     * @param albumId
+     * @return
+     */
+    @GetMapping("api/album/albumInfo/getAlbumStatVo/{albumId}")
+    Result<AlbumStatVo> getAlbumStatVo(@PathVariable Long albumId);
 
 
 }

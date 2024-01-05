@@ -18,6 +18,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -94,5 +95,22 @@ public class UserListenProcessServiceImpl implements UserListenProcessService {
             return userListenProcess.getBreakSecond();
         }
         return new BigDecimal("0");
+    }
+
+    @Override
+    public Map<String, Object> getLatestTrack(Long userId) {
+        // 构建query对象，根据用户ID查找mangodb中存储的声音，并按照更新时间降序
+        Query query = Query.query(Criteria.where("userId").is(userId));
+        Sort sort = Sort.by(Sort.Direction.DESC, "updateTime");
+        query.with(sort);
+        // 根据条件查询数据并返回结果
+        UserListenProcess userListenProcess = mongoTemplate.findOne(query, UserListenProcess.class, MongoUtil.getCollectionName(MongoUtil.MongoCollectionEnum.USER_LISTEN_PROCESS, userId));
+        HashMap<String, Object> map = new HashMap<>();
+        if (null == userListenProcess) {
+            return null;
+        }
+        map.put("albumId", userListenProcess.getAlbumId());
+        map.put("trackId", userListenProcess.getTrackId());
+        return map;
     }
 }

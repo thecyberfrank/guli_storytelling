@@ -58,20 +58,21 @@ public class UserListenProcessApiController {
         return Result.ok();
     }
 
-//	/**
-//	 * 获取谁最近一次播放声音
-//	 * @return
-//	 */
-//	@GuiGuLogin
-//	@Operation(summary = "获取最近一次播放声音")
-//	@GetMapping("/getLatelyTrack")
-//	public Result getLatelyTrack(){
-//		//	获取用户Id
-//		Long userId = AuthContextHolder.getUserId();
-//		//	调用服务层方法. MongoDB中获取. updateTime
-//		Map<String,Object> map = userListenProcessService.getLatelyTrack(userId);
-//		//	返回数据
-//		return Result.ok(map);
-//	}
+    /**
+     * 获取最近一次播放声音
+     *
+     * @return
+     */
+    @GuiGuLogin
+    @Operation(summary = "获取最近一次播放声音")
+    @GetMapping("/getLatelyTrack")
+    public Result<Map<String, Object>> getLatelyTrack() {
+        // 获取用户Id
+        Long userId = AuthContextHolder.getUserId();
+        // 获取播放记录
+        Map<String, Object> map = userListenProcessService.getLatestTrack(userId);
+        // 返回数据
+        return Result.ok(map);
+    }
 }
 

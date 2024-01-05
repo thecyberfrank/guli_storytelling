@@ -36,12 +36,6 @@ public class TrackReceiver {
     @Resource
     AlbumStatService albumStatService;
 
-    @Resource
-    TrackStatMapper trackStatMapper;
-
-    @Resource
-    AlbumStatMapper albumStatMapper;
-
     @KafkaListener(topics = KafkaConstant.QUEUE_TRACK_STAT_UPDATE)
     public void trackPlayNumUpdate(ConsumerRecord<String, String> record) {
         String jsonData = record.value();
@@ -52,14 +46,14 @@ public class TrackReceiver {
             if (isNotConsumed) {
 
                 //更新声音统计信息
-                LambdaUpdateChainWrapper<TrackStat> trackStatUpdateWrapper = new LambdaUpdateChainWrapper<>(trackStatMapper);
+                LambdaUpdateWrapper<TrackStat> trackStatUpdateWrapper = new LambdaUpdateWrapper<>();
                 trackStatUpdateWrapper.eq(TrackStat::getTrackId, trackStatMqVo.getTrackId());
                 trackStatUpdateWrapper.eq(TrackStat::getStatType, trackStatMqVo.getStatType());
                 trackStatUpdateWrapper.setSql("stat_num = stat_num + " + trackStatMqVo.getCount());
                 trackStatService.update(trackStatUpdateWrapper);
 
                 //更新专辑统计信息
-                LambdaUpdateChainWrapper<AlbumStat> albumStatUpdateWrapper = new LambdaUpdateChainWrapper<>(albumStatMapper);
+                LambdaUpdateWrapper<AlbumStat> albumStatUpdateWrapper = new LambdaUpdateWrapper<>();
                 albumStatUpdateWrapper.eq(AlbumStat::getAlbumId, trackStatMqVo.getAlbumId());
                 albumStatUpdateWrapper.eq(AlbumStat::getStatType, trackStatMqVo.getStatType());
                 albumStatUpdateWrapper.setSql("stat_num = stat_num + " + trackStatMqVo.getCount());

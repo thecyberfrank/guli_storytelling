@@ -55,5 +55,19 @@
         group by info.trackId
         order by info.trackId desc
     </select>
+
+    <!--  根据声音Id统计声音状态.  -->
+    <select id="selectTrackStat" resultType="com.atguigu.tingshu.vo.album.TrackStatVo">
+        select MAX(IF(info.statType = '0701', info.statNum, 0)) as playStatNum,
+               MAX(IF(info.statType = '0702', info.statNum, 0)) as collectStatNum,
+               MAX(IF(info.statType = '0703', info.statNum, 0)) as praiseStatNum,
+               MAX(IF(info.statType = '0704', info.statNum, 0)) as commentStatNum
+        from (select stat.track_id  as trackId,
+                     stat.stat_type as statType,
+                     stat.stat_num  as statNum
+              from tingshu_album.track_stat stat
+              where track_id = #{trackId}) info
+        group by info.trackId
+    </select>
 </mapper>
 

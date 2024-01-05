@@ -16,10 +16,7 @@ import com.atguigu.tingshu.model.album.TrackInfo;
 import com.atguigu.tingshu.model.album.TrackStat;
 import com.atguigu.tingshu.query.album.TrackInfoQuery;
 import com.atguigu.tingshu.user.client.UserInfoFeignClient;
-import com.atguigu.tingshu.vo.album.AlbumTrackListVo;
-import com.atguigu.tingshu.vo.album.TrackInfoVo;
-import com.atguigu.tingshu.vo.album.TrackListVo;
-import com.atguigu.tingshu.vo.album.TrackMediaInfoVo;
+import com.atguigu.tingshu.vo.album.*;
 import com.atguigu.tingshu.vo.user.UserInfoVo;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -89,16 +86,6 @@ public class TrackInfoServiceImpl extends ServiceImpl<TrackInfoMapper, TrackInfo
             trackInfo.setMediaType(trackMediaInfo.getType());
             trackInfo.setMediaDuration(trackMediaInfo.getDuration());
             trackInfo.setMediaSize(trackMediaInfo.getSize());
-            //  删除旧流媒体数据.
-            //  vodService.removeTrack(mediaFileId);
-            //  track_stat where track_id = ?
-            //  trackStatMapper.delete(new LambdaQueryWrapper<TrackStat>().eq(TrackStat::getTrackId,trackId));
-            //  新增了一条：
-            //  this.saveTrackStat(trackInfo.getId(), SystemConstant.TRACK_STAT_PLAY);
-            //  this.saveTrackStat(trackInfo.getId(), SystemConstant.TRACK_STAT_COLLECT);
-            //  this.saveTrackStat(trackInfo.getId(), SystemConstant.TRACK_STAT_PRAISE);
-            //  this.saveTrackStat(trackInfo.getId(), SystemConstant.TRACK_STAT_COMMENT);
-            //  专辑.include_track_count = 不需要、
         }
         //  修改：
         trackInfoMapper.updateById(trackInfo);
@@ -124,7 +111,6 @@ public class TrackInfoServiceImpl extends ServiceImpl<TrackInfoMapper, TrackInfo
                 }
             }
         } else {
-            //  定义一个变量
             boolean isNeedPaid = false;
             //  看专辑类型： 0102-vip付费
             if (SystemConstant.ALBUM_PAY_TYPE_VIPFREE.equals(albumInfo.getPayType())) {
@@ -169,6 +155,12 @@ public class TrackInfoServiceImpl extends ServiceImpl<TrackInfoMapper, TrackInfo
             }
         }
         return iPage;
+    }
+
+    @Override
+    public TrackStatVo getTrackStatVoByTrackId(Long trackId) {
+        //	调用mapper 层方法
+        return trackInfoMapper.selectTrackStat(trackId);
     }
 
     @Override

@@ -5,6 +5,7 @@ import com.atguigu.tingshu.query.album.TrackInfoQuery;
 import com.atguigu.tingshu.vo.album.AlbumTrackListVo;
 import com.atguigu.tingshu.vo.album.TrackInfoVo;
 import com.atguigu.tingshu.vo.album.TrackListVo;
+import com.atguigu.tingshu.vo.album.TrackStatVo;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -71,4 +72,11 @@ public interface TrackInfoService extends IService<TrackInfo> {
      * @return
      */
     IPage<AlbumTrackListVo> findAlbumTrackPage(Page<AlbumTrackListVo> albumTrackListVoPage, Long albumId, Long userId);
+
+    /**
+     * 根据声音Id 获取统计信息
+     * @param trackId
+     * @return
+     */
+    TrackStatVo getTrackStatVoByTrackId(Long trackId);
 }

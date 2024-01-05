@@ -3,6 +3,7 @@ package com.atguigu.tingshu.album.mapper;
 import com.atguigu.tingshu.model.album.TrackInfo;
 import com.atguigu.tingshu.query.album.TrackInfoQuery;
 import com.atguigu.tingshu.vo.album.TrackListVo;
+import com.atguigu.tingshu.vo.album.TrackStatVo;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -20,4 +21,6 @@ public interface TrackInfoMapper extends BaseMapper<TrackInfo> {
      * @return
      */
     IPage<TrackListVo> selectUserTrackPage(Page<TrackListVo> trackListVoPage, @Param("vo") TrackInfoQuery trackInfoQuery);
+
+    TrackStatVo selectTrackStat(Long trackId);
 }

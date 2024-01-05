@@ -9,6 +9,7 @@ import com.atguigu.tingshu.query.album.TrackInfoQuery;
 import com.atguigu.tingshu.vo.album.AlbumTrackListVo;
 import com.atguigu.tingshu.vo.album.TrackInfoVo;
 import com.atguigu.tingshu.vo.album.TrackListVo;
+import com.atguigu.tingshu.vo.album.TrackStatVo;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.v3.oas.annotations.Operation;
@@ -165,5 +166,19 @@ public class TrackInfoApiController {
         return Result.ok();
     }
 
+    /**
+     * 获取声音统计接口
+     *
+     * @param trackId
+     * @return
+     */
+    @Operation(summary = "获取声音统计信息")
+    @GetMapping("getTrackStatVo/{trackId}")
+    public Result<TrackStatVo> getTrackStatVo(@PathVariable Long trackId) {
+        //	调用服务层方法
+        TrackStatVo trackStatVo = trackInfoService.getTrackStatVoByTrackId(trackId);
+        //	返回对象
+        return Result.ok(trackStatVo);
+    }
 }
 

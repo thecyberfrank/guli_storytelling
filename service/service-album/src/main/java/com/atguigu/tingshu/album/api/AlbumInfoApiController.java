@@ -94,12 +94,13 @@ public class AlbumInfoApiController {
 
     /**
      * 通过专辑Id 获取到专辑状态信息
+     *
      * @param albumId
      * @return
      */
     @Operation(summary = "通过专辑Id获取到专辑统计信息")
     @GetMapping("/getAlbumStatVo/{albumId}")
-    public Result<AlbumStatVo> getAlbumStatVo(@PathVariable Long albumId){
+    public Result<AlbumStatVo> getAlbumStatVo(@PathVariable Long albumId) {
         //  调用服务层方法.
         AlbumStatVo albumStatVo = albumInfoService.getAlbumStatVo(albumId);
         //  返回数据
@@ -142,6 +143,7 @@ public class AlbumInfoApiController {
      *
      * @return
      */
+    @GuiGuLogin
     @Operation(summary = "获取当前用户全部专辑列表")
     @GetMapping("/findUserAllAlbumList")
     public Result findUserAllAlbumList() {
@@ -156,11 +158,12 @@ public class AlbumInfoApiController {
 
     /**
      * 获取专辑属性值列表
+     *
      * @param albumId
      * @return
      */
     @GetMapping("/findAlbumAttributeValue/{albumId}")
-    public Result<List<AlbumAttributeValue>> findAlbumAttributeValue(@PathVariable("albumId") Long albumId){
+    public Result<List<AlbumAttributeValue>> findAlbumAttributeValue(@PathVariable("albumId") Long albumId) {
         //  调用服务层方法.
         List<AlbumAttributeValue> albumAttributeValueList = albumInfoService.findAlbumAttributeValue(albumId);
         //  返回数据

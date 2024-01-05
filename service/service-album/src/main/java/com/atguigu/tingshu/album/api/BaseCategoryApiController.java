@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.atguigu.tingshu.album.service.BaseCategoryService;
 import com.atguigu.tingshu.common.result.Result;
 import com.atguigu.tingshu.model.album.BaseAttribute;
+import com.atguigu.tingshu.model.album.BaseCategory1;
 import com.atguigu.tingshu.model.album.BaseCategory3;
 import com.atguigu.tingshu.model.album.BaseCategoryView;
 import io.swagger.v3.oas.annotations.Operation;
@@ -25,6 +26,17 @@ public class BaseCategoryApiController {
 
     @Autowired
     private BaseCategoryService baseCategoryService;
+
+
+    /**
+     * 查询所有分类数据
+     */
+    @GetMapping(value = "/findAllCategory1")
+    public Result findAllCategory1() {
+        List<BaseCategory1> category1List = baseCategoryService.findAllCategory1();
+        return Result.ok(category1List);
+    }
+
 
     /**
      * 根据一级分类Id查询置顶到频道页的三级分类列表

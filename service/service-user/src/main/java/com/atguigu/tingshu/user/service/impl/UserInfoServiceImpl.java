@@ -54,11 +54,6 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
         //	判断这个专辑对象是否为空.
         if (null != userPaidAlbum) {
             //	购买了专辑.所有的声音Id 都免费. key=trackId,value=1
-            //			Map<Long, Integer> map = new HashMap<>();
-            //			for (Long trackId : trackIdList) {
-            //				map.put(trackId,1);
-            //			}
-            //			return map;
             Map<Long, Integer> map = trackIdList.stream().collect(Collectors.toMap(trackId -> trackId, trackId -> 1));
             //	返回数据
             return map;

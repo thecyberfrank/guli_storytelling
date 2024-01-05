@@ -9,15 +9,14 @@ import co.elastic.clients.elasticsearch.core.SearchRequest;
 import co.elastic.clients.elasticsearch.core.SearchResponse;
 import co.elastic.clients.elasticsearch.core.search.CompletionSuggestOption;
 import co.elastic.clients.elasticsearch.core.search.Hit;
+import co.elastic.clients.elasticsearch.core.search.HitsMetadata;
 import co.elastic.clients.elasticsearch.core.search.Suggestion;
 import com.alibaba.fastjson.JSONObject;
 import com.atguigu.tingshu.album.client.AlbumInfoFeignClient;
 import com.atguigu.tingshu.album.client.CategoryFeignClient;
+import com.atguigu.tingshu.common.constant.RedisConstant;
 import com.atguigu.tingshu.common.result.Result;
-import com.atguigu.tingshu.model.album.AlbumAttributeValue;
-import com.atguigu.tingshu.model.album.AlbumInfo;
-import com.atguigu.tingshu.model.album.BaseCategory3;
-import com.atguigu.tingshu.model.album.BaseCategoryView;
+import com.atguigu.tingshu.model.album.*;
 import com.atguigu.tingshu.model.search.AlbumInfoIndex;
 import com.atguigu.tingshu.model.search.AttributeValueIndex;
 import com.atguigu.tingshu.model.search.SuggestIndex;
@@ -33,6 +32,7 @@ import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
@@ -68,8 +68,7 @@ public class SearchServiceImpl implements SearchService {
     private ElasticsearchClient elasticsearchClient;
 
     @Autowired
-    private SuggestIndexRepository suggestIndexRepository;
-
+    private RedisTemplate redisTemplate;
 
     @Override
     public List<String> completeSuggest(String keyword) {
@@ -120,6 +119,46 @@ public class SearchServiceImpl implements SearchService {
 
         //  返回数据
         return new ArrayList<>(set);
+    }
+
+    @Override
+    public void updateLatelyAlbumRanking() {
+        /**
+         * 1. 先查询所有一级分类数据
+         * 2. 按照每个维度来统计排行 热度:hotScore、播放量:playStatNum、订阅量:subscribeStatNum、购买量:buyStatNum、评论数:commentStatNum
+         * 3. 从es中重新获取排序之后的专辑信息，并写入缓存中
+         */
+
+        List<BaseCategory1> category1s = categoryFeignClient.findAllCategory1().getData();
+        category1s.stream().forEach(category1 -> {
+            String[] rankingDimensionArray = new String[]{"hotScore", "playStatNum", "subscribeStatNum", "buyStatNum", "commentStatNum"};
+            for (String dimension : rankingDimensionArray) {
+                try {
+                    SearchResponse<AlbumInfoIndex> response = elasticsearchClient.search(f -> f.index("albuminfo")
+                                    .query(q -> q.term(t -> t.field("category1Id").value(category1.getId())))
+                                    .sort(s -> s.field(d -> d.field(dimension).order(SortOrder.Desc)))
+                                    .size(10)
+                            , AlbumInfoIndex.class);
+
+                    List<AlbumInfoIndex> TopAlbumList = response.hits().hits().stream().map(Hit::source).collect(Collectors.toList());
+                    String categoryTopKey = RedisConstant.RANKING_KEY_PREFIX + category1.getId();
+                    // key为ranking:categoryId，属性为hotScore/playStatNum/...，属性值为对应排序维度的前10名
+                    redisTemplate.opsForHash().put(categoryTopKey, dimension, TopAlbumList);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+        });
+
+
+    }
+
+    @Override
+    public List<AlbumInfoIndexVo> findRankingList(Long category1Id, String dimension) {
+        return (List<AlbumInfoIndexVo>) redisTemplate
+                .boundHashOps(RedisConstant.RANKING_KEY_PREFIX + category1Id)
+                .get(dimension);
     }
 
     private Collection<String> parseResultData(SearchResponse<SuggestIndex> searchResponse, String suggestionKeyword) {

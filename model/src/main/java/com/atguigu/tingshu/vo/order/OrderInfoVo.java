@@ -56,7 +56,7 @@ public class OrderInfoVo {
     @DecimalMin(value = "0.00", inclusive = false, message = "订单总金额必须大于0.00")
     @DecimalMax(value = "9999.99", inclusive = true, message = "订单总金额必须大于9999.99")
     @Digits(integer = 4, fraction = 2)
-    @Schema(description = "订单总金额", required = true)
+    @Schema(description = "实际支付总金额", required = true)
     @JsonSerialize(using = Decimal2Serializer.class)
     private BigDecimal orderAmount;
 

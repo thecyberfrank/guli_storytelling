@@ -35,6 +35,23 @@ public class UserInfoApiController {
     }
 
     /**
+     * 判断用户是否购买过专辑
+     * @param albumId
+     * @return
+     */
+    @GuiGuLogin
+    @Operation(summary = "判断用户是否购买过专辑")
+    @GetMapping("/isPaidAlbum/{albumId}")
+    public Result<Boolean> isPaidAlbum(@PathVariable("albumId") Long albumId){
+        //	获取用户Id
+        Long userId = AuthContextHolder.getUserId();
+        //	调用服务层方法.
+        Boolean flag = this.userInfoService.isPaidAlbum(albumId,userId);
+        //	返回结果
+        return Result.ok(flag);
+    }
+
+    /**
      * 判断用户是否购买声音列表
      * @param albumId
      * @param trackIdList
@@ -51,5 +68,22 @@ public class UserInfoApiController {
         //	返回数据
         return Result.ok(map);
     }
+
+    /**
+     * 根据专辑Id 获取到用户已支付声音Id列表
+     * @param albumId
+     * @return
+     */
+    @GuiGuLogin
+    @Operation(summary = "根据专辑id获取用户支付过的声音id列表")
+    @GetMapping("findUserAlreadyPaidTrackList/{userId}/{albumId}")
+    public Result findUserAlreadyPaidTrackList(@PathVariable Long userId, @PathVariable Long albumId){
+        // 根据用户Id 与 专辑Id 获取到已购买的声音Id 集合列表
+        List<Long> trackIdList = this.userInfoService.findUserAlreadyPaidTrackList(userId,albumId);
+        // 返回声音Id 集合数据
+        return Result.ok(trackIdList);
+    }
+
+
 }
 

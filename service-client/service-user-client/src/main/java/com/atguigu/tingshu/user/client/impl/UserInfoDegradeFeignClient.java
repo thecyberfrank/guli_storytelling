@@ -21,4 +21,14 @@ public class UserInfoDegradeFeignClient implements UserInfoFeignClient {
     public Result<Map<Long, Integer>> userIsPaidTrack(Long albumId, List<Long> trackIdList) {
         return null;
     }
+
+    @Override
+    public Result<Boolean> isPaidAlbum(Long albumId) {
+        return null;
+    }
+
+    @Override
+    public Result<List<Long>> findUserAlreadyPaidTrackList(Long userId, Long albumId) {
+        return null;
+    }
 }

@@ -20,6 +20,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.Map;
 
 @Tag(name = "声音管理")
@@ -31,6 +32,21 @@ public class TrackInfoApiController {
     @Autowired
     private TrackInfoService trackInfoService;
 
+
+    /**
+     * 获取用户声音分集购买支付列表
+     * @param trackId
+     * @return
+     */
+    @GuiGuLogin
+    @Operation(summary = "获取用户声音分集购买支付列表")
+    @GetMapping("/findUserNeedToPayTrackList/{trackId}")
+    public Result<List<Map<String, Object>>> findUserNeedToPayTrackList(@PathVariable Long trackId) {
+        Long userId = AuthContextHolder.getUserId();
+        // 获取购买记录集合
+        List<Map<String,Object>> map = trackInfoService.findUserNeedToPayTrackList(userId, trackId);
+        return Result.ok(map);
+    }
 
     /**
      * 声音分类列表

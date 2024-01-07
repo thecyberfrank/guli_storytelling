@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -83,6 +84,32 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
         }
         //	返回map集合
         return map;
+    }
+
+    @Override
+    public Boolean isPaidAlbum(Long albumId, Long userId) {
+        //	select * from user_paid_album where user_id = ? and album_id = ?;
+        LambdaQueryWrapper<UserPaidAlbum> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(UserPaidAlbum::getAlbumId, albumId);
+        queryWrapper.eq(UserPaidAlbum::getUserId, userId);
+        UserPaidAlbum paidAlbum = userPaidAlbumMapper.selectOne(queryWrapper);
+        return null == paidAlbum ? false : true;
+    }
+
+    @Override
+    public List<Long> findUserAlreadyPaidTrackList(Long albumId, Long userId) {
+        List<Long> trackIdList = new ArrayList<>();
+        //	user_paid_track -- 记录着用户购买专辑对应的声音Id.
+        //	select * from user_paid_track where album_id = ? and user_id = ?;
+        LambdaQueryWrapper<UserPaidTrack> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(UserPaidTrack::getAlbumId,albumId).eq(UserPaidTrack::getUserId,userId);
+        List<UserPaidTrack> userPaidTrackList = userPaidTrackMapper.selectList(wrapper);
+        if (!CollectionUtils.isEmpty(userPaidTrackList)){
+            //  返回数据。
+            trackIdList = userPaidTrackList.stream().map(UserPaidTrack::getTrackId).collect(Collectors.toList());
+        }
+        return trackIdList;
+        //  return userPaidTrackMapper.selectList(new LambdaQueryWrapper<UserPaidTrack>().eq(UserPaidTrack::getAlbumId, albumId).eq(UserPaidTrack::getUserId, userId)).stream().map(UserPaidTrack::getTrackId).collect(Collectors.toList());
     }
 
 

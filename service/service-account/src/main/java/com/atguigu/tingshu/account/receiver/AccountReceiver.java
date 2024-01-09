@@ -25,4 +25,18 @@ public class AccountReceiver {
             userAccountService.initUserAccount(Long.parseLong(userId));
         }
     }
+
+    /**
+     * 监听用户扣减锁定金额
+     */
+    @KafkaListener(topics = KafkaConstant.QUEUE_ACCOUNT_MINUS)
+    public void minus(ConsumerRecord<String, String> record) {
+        String orderNo = record.value();
+        if (StringUtils.isEmpty(orderNo)) {
+            return;
+        }
+        //扣减锁定金额
+        userAccountService.minus(orderNo);
+    }
+
 }

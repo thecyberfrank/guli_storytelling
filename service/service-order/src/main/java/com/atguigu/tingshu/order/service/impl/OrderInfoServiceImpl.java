@@ -1,21 +1,30 @@
 package com.atguigu.tingshu.order.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.atguigu.tingshu.account.client.UserAccountFeignClient;
 import com.atguigu.tingshu.album.client.AlbumInfoFeignClient;
 import com.atguigu.tingshu.album.client.TrackInfoFeignClient;
+import com.atguigu.tingshu.common.constant.KafkaConstant;
 import com.atguigu.tingshu.common.constant.SystemConstant;
 import com.atguigu.tingshu.common.execption.GuiguException;
 import com.atguigu.tingshu.common.result.Result;
 import com.atguigu.tingshu.common.result.ResultCodeEnum;
+import com.atguigu.tingshu.common.service.KafkaService;
 import com.atguigu.tingshu.model.album.AlbumInfo;
 import com.atguigu.tingshu.model.album.TrackInfo;
+import com.atguigu.tingshu.model.order.OrderDerate;
+import com.atguigu.tingshu.model.order.OrderDetail;
 import com.atguigu.tingshu.model.order.OrderInfo;
 import com.atguigu.tingshu.model.user.VipServiceConfig;
 import com.atguigu.tingshu.order.helper.SignHelper;
+import com.atguigu.tingshu.order.mapper.OrderDerateMapper;
 import com.atguigu.tingshu.order.mapper.OrderInfoMapper;
+import com.atguigu.tingshu.order.service.OrderDetailService;
 import com.atguigu.tingshu.order.service.OrderInfoService;
 import com.atguigu.tingshu.user.client.UserInfoFeignClient;
 import com.atguigu.tingshu.user.client.VipServiceConfigFeignClient;
+import com.atguigu.tingshu.vo.account.AccountLockResultVo;
+import com.atguigu.tingshu.vo.account.AccountLockVo;
 import com.atguigu.tingshu.vo.order.OrderDerateVo;
 import com.atguigu.tingshu.vo.order.OrderDetailVo;
 import com.atguigu.tingshu.vo.order.OrderInfoVo;
@@ -24,10 +33,14 @@ import com.atguigu.tingshu.vo.user.UserInfoVo;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -57,6 +70,18 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
 
     @Autowired
     RedisTemplate redisTemplate;
+
+    @Autowired
+    OrderDetailService orderDetailService;
+
+    @Autowired
+    OrderDerateMapper orderDerateMapper;
+
+    @Resource
+    UserAccountFeignClient userAccountFeignClient;
+
+    @Autowired
+    KafkaService kafkaService;
 
     @Override
 
@@ -221,4 +246,111 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
 
         return orderInfoVo;
     }
+
+    @Override
+    public String submitOrder(OrderInfoVo orderInfoVo, Long userId) {
+        //  校验签名，如果订单信息被篡改，就抛出异常
+        Map map = JSON.parseObject(JSON.toJSONString(orderInfoVo), Map.class);
+        SignHelper.checkSign(map);
+
+        // 删除redis里面的用户对应tradeNo，删除成功则是第一次提交该订单，删除失败为重复提交
+        String tradeNo = orderInfoVo.getTradeNo();
+        String tradeNoKey = "user:trade" + userId;
+        // 使用lua脚本保证查询该key是否存在和删除该key的原子性
+        String script = "if(redis.call('get', KEYS[1]) == ARGV[1]) then return redis.call('del', KEYS[1]) else return 0 end";
+        DefaultRedisScript<Long> redisScript = new DefaultRedisScript<>();
+        redisScript.setScriptText(script);
+        redisScript.setResultType(Long.class);
+        // 执行lua脚本 execute(script, key, value)
+        Long count = (Long) this.redisTemplate.execute(redisScript, List.of(tradeNoKey), tradeNo);
+        if (count == 0) {
+            throw new GuiguException(ResultCodeEnum.ORDER_SUBMIT_REPEAT);
+        }
+
+        // 判断支付方式
+        if (orderInfoVo.getPayWay().equals(SystemConstant.ORDER_PAY_WAY_WEIXIN)) {
+            // 生成订单号
+            this.saveOrder(orderInfoVo, userId, tradeNo);
+            // 调用微信支付接口
+            return tradeNo;
+        } else {
+            try {
+                // 余额支付
+                // 先锁定金额，再扣除锁定的金额，如果中间出现异常则解锁金额
+                AccountLockVo accountLockVo = new AccountLockVo();
+                accountLockVo.setOrderNo(tradeNo);
+                accountLockVo.setUserId(userId);
+                accountLockVo.setAmount(orderInfoVo.getOrderAmount());
+                accountLockVo.setContent(orderInfoVo.getItemType());
+
+                Result<AccountLockResultVo> result = userAccountFeignClient.checkAndLock(accountLockVo);
+                if (200 != result.getCode()) {
+                    throw new GuiguException(result.getCode(), result.getMessage());
+                }
+                // 保存订单数据到：order_info order_detail order_derate
+                this.saveOrder(orderInfoVo, userId, tradeNo);
+                // 扣减锁定金额
+                kafkaService.sendMessage(KafkaConstant.QUEUE_ACCOUNT_MINUS, tradeNo);
+                //  返回订单编号
+                return tradeNo;
+            } catch (GuiguException e) {
+                //  解锁金额：
+                kafkaService.sendMessage(KafkaConstant.QUEUE_ACCOUNT_UNLOCK, tradeNo);
+                throw new GuiguException(ResultCodeEnum.ORDER_SUBMIT_FAIL);
+            }
+        }
+    }
+
+
+    /**
+     * 保存订单数据到：order_info order_detail order_derate
+     *
+     * @param orderInfoVo
+     * @param userId
+     * @param orderNo
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public void saveOrder(OrderInfoVo orderInfoVo, Long userId, String orderNo) {
+        //  保存到order_info
+        OrderInfo orderInfo = new OrderInfo();
+        BeanUtils.copyProperties(orderInfoVo, orderInfo);
+        orderInfo.setUserId(userId);
+        orderInfo.setOrderTitle(orderInfoVo.getOrderDetailVoList().get(0).getItemName());
+        orderInfo.setOrderNo(orderNo);
+        orderInfo.setOrderStatus(SystemConstant.ORDER_STATUS_UNPAID);
+        orderInfoMapper.insert(orderInfo);
+
+        // 保存到order_detail
+        List<OrderDetailVo> orderDetailVoList = orderInfoVo.getOrderDetailVoList();
+        if (!CollectionUtils.isEmpty(orderDetailVoList)) {
+            List<OrderDetail> orderDetailList = orderDetailVoList.stream().map(orderDetailVo -> {
+                //  创建对象
+                OrderDetail orderDetail = new OrderDetail();
+                //  属性拷贝.
+                BeanUtils.copyProperties(orderDetailVo, orderDetail);
+                orderDetail.setOrderId(orderInfo.getId());
+                return orderDetail;
+            }).collect(Collectors.toList());
+            //  mybatis-plus的service层有批量保存方法
+            orderDetailService.saveBatch(orderDetailList);
+        }
+
+        // 保存到order_derate订单见面明细
+        List<OrderDerateVo> orderDerateVoList = orderInfoVo.getOrderDerateVoList();
+        if (!CollectionUtils.isEmpty(orderDerateVoList)) {
+            //  循环遍历。
+            orderDerateVoList.stream().forEach(orderDerateVo -> {
+                //  创建对象
+                OrderDerate orderDerate = new OrderDerate();
+                //  属性拷贝.
+                BeanUtils.copyProperties(orderDerateVo, orderDerate);
+                orderDerate.setOrderId(orderInfo.getId());
+                // 也可以直接使用mybatis的mapper层里面的insert插入
+                orderDerateMapper.insert(orderDerate);
+            });
+        }
+
+
+    }
+
 }

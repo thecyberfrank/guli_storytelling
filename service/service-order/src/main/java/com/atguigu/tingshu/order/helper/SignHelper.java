@@ -25,7 +25,7 @@ public class SignHelper {
             throw new GuiguException(ResultCodeEnum.SIGN_ERROR);
         }
         long currentTimestamp = getTimestamp();
-        if (Math.abs(currentTimestamp - remoteTimestamp) > 500000) {
+        if (Math.abs(currentTimestamp - remoteTimestamp) > 5 * 60 * 1000) {
             log.error("签名已过期，服务器当前时间:{}", currentTimestamp);
             throw new GuiguException(ResultCodeEnum.SIGN_OVERDUE);
         }

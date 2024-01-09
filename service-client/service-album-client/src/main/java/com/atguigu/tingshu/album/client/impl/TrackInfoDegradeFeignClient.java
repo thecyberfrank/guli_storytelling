@@ -13,8 +13,6 @@ public class TrackInfoDegradeFeignClient implements TrackInfoFeignClient {
 
     @Override
     public Result<List<TrackInfo>> findTrackInfoNeedToPayList(Long itemId, Integer trackCount) {
-
-
         return null;
     }
 }

@@ -34,6 +34,22 @@ public class TrackInfoApiController {
 
 
     /**
+     * 批量获取下单付费声音列表
+     * @param trackId
+     * @param trackCount
+     * @return
+     */
+    @Operation(summary = "批量获取下单付费声音列表")
+    @GetMapping("findTrackInfoNeedToPayList/{trackId}/{trackCount}")
+    public Result<List<TrackInfo>> findTrackInfoNeedToPayList(@PathVariable Long trackId, @PathVariable Integer trackCount) {
+        //	调用服务层方法
+        List<TrackInfo> trackInfoList = trackInfoService.findTrackInfoNeedToPayList(trackId, trackCount);
+        //	返回数据列表
+        return Result.ok(trackInfoList);
+    }
+
+
+    /**
      * 获取用户声音分集购买支付列表
      * @param trackId
      * @return

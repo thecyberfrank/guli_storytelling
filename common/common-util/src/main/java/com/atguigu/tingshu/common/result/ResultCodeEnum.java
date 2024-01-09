@@ -39,6 +39,7 @@ public enum ResultCodeEnum {
     ACCOUNT_MINUSLOCK_ERROR(222, "账户余额扣减失败"),
     ACCOUNT_LOCK_REPEAT(223, "重复锁定"),
     ORDER_SUBMIT_REPEAT(224, "不能重复提交订单"),
+    ORDER_SUBMIT_FAIL(224, "提交订单失败"),
 
     NO_BUY_NOT_SEE(225, "未购买不能观看"),
 
